@@ -1,4 +1,4 @@
-package Moon.MoonShop;
+package moon.moonShop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
