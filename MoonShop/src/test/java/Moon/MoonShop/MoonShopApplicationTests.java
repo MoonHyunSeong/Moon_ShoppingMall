@@ -1,10 +1,10 @@
-package moon.moonShop;
+package moon.moonshop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MoonShopApplicationTests {
+class MoonshopApplicationTests {
 
 	@Test
 	void contextLoads() {
