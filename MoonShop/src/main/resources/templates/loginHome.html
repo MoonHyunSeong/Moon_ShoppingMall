@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MoonShop</title>
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+</head>
+<body>
+  <h2 th:text="|${member.userName}님 환영합니다|"></h2>
+
+  <div>
+      <button onclick="location.href='members/home.html'"
+              th:onclick="|location.href='@{/}'|" type="button">
+          상품 관리
+      </button>
+  </div>
+  <div>
+      <form th:action="@{/logout}" method="post">
+          <button type="submit">Logout</button>
+      </form>
+  </div>
+</body>
+</html>

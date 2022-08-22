@@ -6,17 +6,17 @@
     <link rel="stylesheet" href="https://unpkg.com/mvp.css">
 </head>
 <body>
-  <h2 th:text="${data}"></h2>
+  <h2>어서오세요 MoonShop 입니다 ^_^</h2>
 
     <div>
-        <a href="/login">
-            <button>LogIn</button>
-        </a>
-    </div>
-    <div>
-        <a href="/join">
-            <button>Join</button>
-        </a>
+        <button onclick="location.href='members/login.html'"
+                th:onclick="|location.href='@{/login}'|" type="button">
+            Login
+        </button>
+        <button onclick="location.href='members/join.html'"
+            th:onclick="|location.href='@{members/join}'|" type="button">
+            Join
+        </button>
     </div>
 </body>
 </html>

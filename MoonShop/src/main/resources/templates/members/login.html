@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+
+    <style>
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <h2>고갱님 로그인하세요 ^_^</h2>
+    </div>
+
+    <form action="home.html" th:action th:object="${loginDto}" method="post">
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}"
+               th:text="${err}">전체 오류 메시지</p>
+        </div>
+        <div>
+            <label for="userId"></label>
+            <input type="text" id="userId" th:field="*{userId}" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{userId}" />
+        </div>
+        <div>
+            <label for="password"></label>
+            <input type="password" id="password" th:field="*{password}" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{password}" />
+        </div>
+
+        <div class="col">
+            <button type="submit">Login</button>
+            <button th:onclick="|location.href='@{/}'|">Cancel</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
