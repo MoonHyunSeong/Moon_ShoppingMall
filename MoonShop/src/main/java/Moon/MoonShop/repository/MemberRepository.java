@@ -3,10 +3,13 @@ package moon.moonshop.repository;
 import lombok.extern.slf4j.Slf4j;
 import moon.moonshop.domain.member.Member;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -18,6 +21,8 @@ import java.util.*;
 public class MemberRepository {
 
     private final JdbcTemplate jdbcTemplate;
+//    private RowMapper<Member> memberRowMapper = BeanPropertyRowMapper.newInstance(Member.class);
+
 
     @Autowired
     public MemberRepository(DataSource dataSource) {
@@ -32,10 +37,12 @@ public class MemberRepository {
     public Member save(Member member) throws SQLException {
 
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+//        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcInsert.withTableName("member").usingGeneratedKeyColumns("member_id");
-        // pk 키 값을 부여하는 부분인듯
+        // member_id를 pk로 사용하겠다 하는 부분인듯
 
         Map<String, Object> parameters = new HashMap<>();
+//        parameters.put("member_id", keyHolder);
         parameters.put("member_userid", member.getUserId());
         parameters.put("member_password", member.getPassword());
         parameters.put("member_username", member.getUserName());

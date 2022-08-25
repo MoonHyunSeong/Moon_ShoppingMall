@@ -5,8 +5,13 @@ import moon.moonshop.domain.item.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -16,57 +21,22 @@ import java.util.*;
 @Repository
 public class ItemRepository {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate template;
 
-    @Autowired
     public ItemRepository(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+        this.template = new NamedParameterJdbcTemplate(dataSource);
     }
 
     public Item save(Item item) {
+        String sql = "insert into item (itemname, price, quantity, category, owner) " +
+                "values (:itemName, :price, :stockQuantity, :category, :userId)";
 
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.withTableName("item").usingGeneratedKeyColumns("item_id");
+        SqlParameterSource param = new BeanPropertySqlParameterSource(item);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        template.update(sql, param, keyHolder);
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("item_name", item.getItemName());
-        parameters.put("item_price", item.getPrice());
-        parameters.put("item_quantity", item.getStockQuantity());
-
-        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-
-        item.setId(key.longValue());
-
+        Long key = keyHolder.getKey().longValue();
+        item.setId(key);
         return item;
-    }
-
-    public Optional<Item> findById(Long id) {
-        List<Item> result = jdbcTemplate.query("select * from item where item_id = ?", itemRowMapper(), id);
-        return result.stream().findAny();
-    }
-
-
-    public Optional<Item> findByName(String itemName) {
-        List<Item> result = jdbcTemplate.query("select * from item where item_name =?", itemRowMapper(), itemName);
-        return result.stream().findAny();
-    }
-
-    public List<Item> findByAll() {
-        return jdbcTemplate.query("select * from item", itemRowMapper());
-    }
-
-
-
-    private RowMapper<Item> itemRowMapper() {
-        //멤버 테이블에 행을 만들어주는 듯 하다.
-
-        return (rs, rowNum) -> {
-            Item item = new Item();
-            item.setId(rs.getLong("item_id"));
-            item.setItemName(rs.getString("item_name"));
-            item.setPrice(rs.getInt("item_price"));
-            item.setStockQuantity(rs.getInt("item_quantity"));
-            return item;
-        };
     }
 }

@@ -4,10 +4,12 @@ package moon.moonshop.domain.member;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class Member {
 
+    @NotNull
     private Long id;
 
     @NotEmpty
@@ -18,33 +20,23 @@ public class Member {
     @NotEmpty
     private String userName;
 
-//    @NotEmpty
-//    private String money;
-//    @NotEmpty
-//    private String point;
+    @NotEmpty
+    private Integer point;
 
-//    private String email;
-//
-//
-//    private Address address;
-//
-//    private String tel;
-//
-//
-//    private Account account;
+    private String city;
+    private String street;
+    private String zipcode;
 
-    /*public Member() {
+    public Member() {
     }
 
-    public Member(String userId, String password, String userName
-            *//*, String email,
-                  Address address, String tel, Account account*//*) {
+    public Member(String userId, String password, String userName, Integer point, String city, String street, String zipcode) {
         this.userId = userId;
         this.password = password;
         this.userName = userName;
-//        this.email = email;
-//        this.address = address;
-//        this.tel = tel;
-//        this.account = account;
-    }*/
+        this.point = point;
+        this.city = city;
+        this.street = street;
+        this.zipcode = zipcode;
+    }
 }

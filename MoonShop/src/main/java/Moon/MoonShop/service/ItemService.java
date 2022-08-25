@@ -32,10 +32,10 @@ public class ItemService {
         itemRepository.save(item);
     }
 
-    public void updateItem(String itemName) {
-        Optional<Item> findItem = itemRepository.findByName(itemName);
-
-    }
+//    public void updateItem(String itemName) {
+//        Optional<Item> findItem = itemRepository.findByName(itemName);
+//
+//    }
 
 
 }
