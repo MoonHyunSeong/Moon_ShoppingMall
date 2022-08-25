@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moon.moonshop.domain.member.Member;
 import moon.moonshop.dto.LoginDto;
-import moon.moonshop.service.LoginService;
+import moon.moonshop.service.MemberService;
 import moon.moonshop.web.SessionConst;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class LoginController {
 
-    private final LoginService loginService;
+    private final MemberService memberService;
 
     @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginDto") LoginDto form) {
@@ -39,7 +38,7 @@ public class LoginController {
 
         // 로그인 서비스에서 로그인 체크하기. form에서 넘어온 비번과 리포지토리에서 꺼내온 비번과 같은지 비교한다.
         // 디비 연동이 안된 현재 상태에서는 init 된 유저 값이랑만 비교중이다.
-        Member loginMember = loginService.login(form.getUserId(), form.getPassword());
+        Member loginMember = memberService.login(form.getUserId(), form.getPassword());
         log.info("login? {}", loginMember);
 
         if (loginMember == null) {

@@ -10,14 +10,26 @@
 
   <div>
       <button onclick="location.href='members/home.html'"
+              th:onclick="|location.href='@{/items/addItem}'|" type="button">
+          상품 등록
+      </button>
+      <form th:action="@{/logout}" method="post">
+          <button type="submit">로그아웃</button>
+      </form>
+  </div>
+  <div>
+      <label>주문 내역</label>
+      <button onclick="location.href='members/join.html'"
               th:onclick="|location.href='@{/}'|" type="button">
-          상품 관리
+          주문 내역
       </button>
   </div>
   <div>
-      <form th:action="@{/logout}" method="post">
-          <button type="submit">Logout</button>
-      </form>
+      <label>상품 기능</label>
+      <button onclick="location.href='members/join.html'"
+              th:onclick="|location.href='@{items/itemList}'|" type="button">
+          상품 목록
+      </button>
   </div>
 </body>
 </html>

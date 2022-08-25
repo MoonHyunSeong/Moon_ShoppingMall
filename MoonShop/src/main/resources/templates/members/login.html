@@ -24,21 +24,23 @@
                th:text="${err}">전체 오류 메시지</p>
         </div>
         <div>
-            <label for="userId"></label>
+            <label for="userId">Login ID</label>
             <input type="text" id="userId" th:field="*{userId}" th:errorclass="field-error">
             <div class="field-error" th:errors="*{userId}" />
         </div>
         <div>
-            <label for="password"></label>
+            <label for="password">Password</label>
             <input type="password" id="password" th:field="*{password}" th:errorclass="field-error">
             <div class="field-error" th:errors="*{password}" />
         </div>
 
-        <div class="col">
-            <button type="submit">Login</button>
-            <button th:onclick="|location.href='@{/}'|">Cancel</button>
+        <div>
+            <button type="submit">로그인</button>
         </div>
     </form>
+    <div>
+        <button th:onclick="|location.href='@{/}'|">취소</button>
+    </div>
 </div>
 </body>
 </html>

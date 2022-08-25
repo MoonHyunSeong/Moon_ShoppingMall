@@ -9,14 +9,24 @@
   <h2>어서오세요 MoonShop 입니다 ^_^</h2>
 
     <div>
+        <label>회원 기능</label>
         <button onclick="location.href='members/login.html'"
                 th:onclick="|location.href='@{/login}'|" type="button">
-            Login
+            로그인
         </button>
         <button onclick="location.href='members/join.html'"
             th:onclick="|location.href='@{members/join}'|" type="button">
-            Join
+            회원 가입
         </button>
     </div>
+
+  <div>
+      <label>상품 목록</label>
+      <button onclick="location.href='members/join.html'"
+              th:onclick="|location.href='@{items/itemList}'|" type="button">
+          상품 목록
+      </button>
+  </div>
+
 </body>
 </html>

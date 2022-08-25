@@ -18,24 +18,33 @@ public class Member {
     @NotEmpty
     private String userName;
 
-    private String email;
+//    @NotEmpty
+//    private String money;
+//    @NotEmpty
+//    private String point;
 
+//    private String email;
+//
+//
+//    private Address address;
+//
+//    private String tel;
+//
+//
+//    private Account account;
 
-    private Address address;
+    /*public Member() {
+    }
 
-    private String tel;
-
-
-    private Account account;
-
-    public Member(String userId, String password, String userName, String email,
-                  Address address, String tel, Account account) {
+    public Member(String userId, String password, String userName
+            *//*, String email,
+                  Address address, String tel, Account account*//*) {
         this.userId = userId;
         this.password = password;
         this.userName = userName;
-        this.email = email;
-        this.address = address;
-        this.tel = tel;
-        this.account = account;
-    }
+//        this.email = email;
+//        this.address = address;
+//        this.tel = tel;
+//        this.account = account;
+    }*/
 }

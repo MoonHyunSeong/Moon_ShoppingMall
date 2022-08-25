@@ -17,22 +17,34 @@
     <h2>회원 가입을 환영합니다 ^_^</h2>
     <form action="" th:action th:object="${member}" method="post">
 
-        <label for="loginId">Login ID</label>
-        <input type="text" id="loginId" th:field="*{userId}" th:errorclass="field-error">
-<!--        중복 체크 필요 -->
-        <label for="password">Password</label>
-        <input type="password" id="password" th:field="*{password}" th:errorclass="field-error">
-
-        <label for="userName">UserName</label>
-        <input type="text" id="userName" th:field="*{userName}" th:errorclass="field-error">
-<!--        <input type="email" placeholder="pls input email">-->
-<!--        <input type="text" placeholder="pls input name">-->
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}"
+               th:text="${err}">전체 오류 메시지</p>
+        </div>
         <div>
-            <div>
-                <button type="submit">Join</button>
-                <button th:onclick="|location.href='@{/}'|">Cancel</button>
-            </div>
+            <label for="loginId">Login ID</label>
+            <input type="text" id="loginId" th:field="*{userId}" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{userId}" />
+    <!--        중복 체크 필요 -->
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" th:field="*{password}" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{password}" />
+        </div>
+        <div>
+            <label for="userName">UserName</label>
+            <input type="text" id="userName" th:field="*{userName}" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{userName}" />
+    <!--        <input type="email" placeholder="pls input email">-->
+    <!--        <input type="text" placeholder="pls input name">-->
+        </div>
+        <div>
+                <button type="submit">회원 가입</button>
         </div>
     </form>
+    <div>
+        <button th:onclick="|location.href='@{/}'|">취소</button>
+    </div>
 </body>
 </html>

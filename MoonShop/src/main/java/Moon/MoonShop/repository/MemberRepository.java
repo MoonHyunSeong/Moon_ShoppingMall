@@ -2,49 +2,86 @@ package moon.moonshop.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import moon.moonshop.domain.member.Member;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.*;
 
 @Slf4j
 @Repository
 public class MemberRepository {
 
-    private static Map<Long, Member> store = new ConcurrentHashMap<>();
-    // map을 통해 회원들 id 기준으로 저장
-    private static long sequence = 0L; // uuid를 통한 고유번호 제공 방법? 고민
+    private final JdbcTemplate jdbcTemplate;
 
-    public Member save(Member member) {
-        member.setId(++sequence);
-        log.info("save: member={}", member);
-        store.put(member.getId(), member);
+    @Autowired
+    public MemberRepository(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    /*private static Map<Long, Member> store = new ConcurrentHashMap<>();
+
+    // map을 통해 회원들 id 기준으로 저장
+    private static long sequence = 0L; // uuid를 통한 고유번호 제공 방법? 고민*/
+
+    public Member save(Member member) throws SQLException {
+
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsert.withTableName("member").usingGeneratedKeyColumns("member_id");
+        // pk 키 값을 부여하는 부분인듯
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("member_userid", member.getUserId());
+        parameters.put("member_password", member.getPassword());
+        parameters.put("member_username", member.getUserName());
+        // 이게 좀 잘 모르겠는데 아무튼 필드에 맞게 값을 부여하는 부분이라고 생각.
+
+        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
+        // 키 값에 대응하여 테이블에 행을 통으로 넣어주는 부분이라고 생각.
+
+        member.setId(key.longValue());
+        // member 에 id값 전달. -> 현재 도메인에 setter가 존재하는데 이것이 문제가 될 수 있는지는 고민이 필요.
+
         return member;
     }
 
-    public Member findById(Long id) {
+    public Optional<Member> findById(Long user_id) {
         //고유 id로 회원 찾아오기.
-        return store.get(id);
+        List<Member> result = jdbcTemplate.query("select * from member where member_id = ?", memberRowMapper(), user_id);
+        return result.stream().findAny();
     }
 
     public List<Member> findByAll() {
-        // 훗날 관리자 페이지를 위해서 남겨두겠다.
-        return new ArrayList<>(store.values());
+        return jdbcTemplate.query("select * from member", memberRowMapper());
+//        // 훗날 관리자 페이지를 위해서 남겨두겠다.
+//        return new ArrayList<>(store.values());
     }
 
     public Optional<Member> findByLoginId(String loginId) {
-        return findByAll().stream()
-                .filter(m -> m.getUserId().equals(loginId))
-                .findFirst();
+        List<Member> result = jdbcTemplate.query("select * from member where member_userid = ?", memberRowMapper(), loginId);
+        return result.stream().findAny();
     }
 
-    public void clearStore() {
-        // for test code
-        store.clear();
+    public void updatePassword(Member member, String newPw) {
+        jdbcTemplate.update("update member set member_password =? " +
+                "where member_userId =?", newPw, member.getUserId());
     }
 
+    private RowMapper<Member> memberRowMapper() {
+        //멤버 테이블에 행을 만들어주는 듯 하다.
 
+        return (rs, rowNum) -> {
+            Member member = new Member();
+            member.setId(rs.getLong("member_id"));
+            member.setUserId(rs.getString("member_userid"));
+            member.setPassword(rs.getString("member_password"));
+            member.setUserName(rs.getString("member_username"));
+            return member;
+        };
+    }
 }
