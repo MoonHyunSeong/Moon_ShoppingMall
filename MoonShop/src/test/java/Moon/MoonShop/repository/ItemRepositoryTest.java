@@ -1,8 +1,8 @@
 package moon.moonshop.repository;
 
-import moon.moonshop.domain.item.Category;
 import moon.moonshop.domain.item.Item;
-import moon.moonshop.domain.member.Member;
+import moon.moonshop.repository.item.ItemRepository;
+import moon.moonshop.repository.member.MemberRepositoryV3;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,31 +11,77 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
+
 @SpringBootTest
-@Transactional
 class ItemRepositoryTest {
 
     @Autowired
     ItemRepository itemRepository;
 
     @Autowired
-    MemberRepositoryV2 memberRepository;
+    MemberRepositoryV3 memberRepository;
 
 
     @Test
-    @Rollback(value = false)
     public void save() throws Exception {
 
-        Optional<Member> moon2 = memberRepository.findByUserId("moon2");
-
         //given
-        Item item = new Item("james", 30000, 50, "alcohol", moon2.get().getUserId());
+        Item item = new Item();
+        item.setItemName("goldenBlue");
+        item.setSeller("moon2");
+        item.setPrice(70000);
+        item.setQuantity(100);
+        item.setCategory("alcohol");
 
-        Item save = itemRepository.save(item);
         //when
+        Item savedItem = itemRepository.save(item);
 
         //then
-
+        assertThat(savedItem.getItemName()).isEqualTo(item.getItemName());
     }
+
+    @Test
+    public void findByItemName() throws Exception {
+        //given
+        Optional<Item> findItem1 = itemRepository.findByItem("james", "moon1");
+        Optional<Item> findItem2 = itemRepository.findByItem("james", "moon2");
+
+        assertThat(findItem1).isNotEmpty();
+        assertThat(findItem2).isEmpty();
+    }
+
+    @Test
+    @Transactional
+    public void update() throws Exception {
+        //given
+        Optional<Item> item = itemRepository.findByItem("james", "moon1");
+
+        Item updateItem = item.get();
+        updateItem.setPrice(100000);
+        updateItem.setQuantity(150);
+
+        //when
+        itemRepository.updateItem(updateItem);
+        //then
+        Optional<Item> findUpdate = itemRepository.findByItem("james", "moon1");
+
+        assertThat(findUpdate.get().getPrice()).isEqualTo(100000);
+        assertThat(findUpdate.get().getQuantity()).isEqualTo(150);
+    }
+     
+     @Test
+     @Transactional
+     public void remove() throws Exception {
+
+
+         Optional<Item> findItem = itemRepository.findByItem("james", "moon1");
+
+         itemRepository.removeItem(findItem.get());
+
+         Optional<Item> byItem = itemRepository.findByItem("james", "moon1");
+         assertThat(byItem).isEmpty();
+
+      }
 
 }

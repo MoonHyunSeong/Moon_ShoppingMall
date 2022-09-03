@@ -2,11 +2,14 @@ package moon.moonshop.service;
 
 import lombok.RequiredArgsConstructor;
 import moon.moonshop.domain.item.Item;
-import moon.moonshop.repository.ItemRepository;
+import moon.moonshop.domain.item.ItemUpdateDto;
+import moon.moonshop.repository.item.ItemRepository;
+import moon.moonshop.repository.member.MemberRepositoryV3;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -14,28 +17,38 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    /**
-     * update 를 여기다가 일단 넣어보자.
-     */
+    public String saveItem(Item item) {
 
-//    public void updateItem(Long itemId, Item updateParam) {
-//        Optional<Item> findItem = itemRepository.findById(itemId);
-//
-//        findItem.setItemName(updateParam.getItemName());
-//        findItem.setPrice(updateParam.getPrice());
-//        findItem.setStockQuantity(updateParam.getStockQuantity());
-//
-//    }
+        if (item.getPrice() > 999999){
+            return "최대 가격을 초과했습니다. 최대 가격 = 999,999";
+        }
+        if (item.getQuantity() > 999) {
+            return "최대 갯수를 초과했습니다. 최대 갯수 = 999 ";
+        }
 
-    @Transactional
-    public void saveItem(Item item) {
         itemRepository.save(item);
+        return "정상적으로 등록되었습니다.";
     }
 
-//    public void updateItem(String itemName) {
-//        Optional<Item> findItem = itemRepository.findByName(itemName);
-//
-//    }
+    public Optional<Item> findByItem(String itemName, String seller) {
+        Optional<Item> findItem = itemRepository.findByItem(itemName, seller);
+        return findItem;
+    }
+
+    /**
+     * update 를 위한 dto를 하나 만들어 줘야 한다.
+     * 아이템 수정은 가격과 재고 수량밖에 없기 때문이다.
+     */
+    @Transactional
+    public void updateItem(Item item) {
+        itemRepository.updateItem(item);
+    }
+
+    @Transactional
+    public void removeItem(Item item) {
+        itemRepository.removeItem(item);
+    }
+
 
 
 }

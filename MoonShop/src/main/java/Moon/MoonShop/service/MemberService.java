@@ -3,23 +3,25 @@ package moon.moonshop.service;
 
 import lombok.RequiredArgsConstructor;
 import moon.moonshop.domain.member.Member;
-import moon.moonshop.repository.MemberRepository;
-import moon.moonshop.repository.MemberRepositoryV2;
+import moon.moonshop.repository.member.MemberRepositoryV2;
+import moon.moonshop.repository.member.MemberRepositoryV3;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepositoryV2 memberRepository;
+    private final MemberRepositoryV3 memberRepository;
 
     /**
      * @return null이면 중복 회원 존재
      * save까지 처리.
      */
+    @Transactional
     public Member join(Member member) throws SQLException {
         Member memberValid = memberRepository.findByUserId(member.getUserId())
                 .orElse(null);
@@ -41,10 +43,9 @@ public class MemberService {
                 .orElse(null);
     }
 
+    @Transactional
     public void updatePassword(Member member, String newPw) {
         memberRepository.updatePw(member.getUserId(),newPw);
     }
-
-
 
 }

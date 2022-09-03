@@ -1,4 +1,4 @@
-package moon.moonshop.repository;
+package moon.moonshop.repository.member;
 
 import lombok.extern.slf4j.Slf4j;
 import moon.moonshop.domain.member.Member;
@@ -41,7 +41,7 @@ public class MemberRepositoryV2 {
         SqlParameterSource param = new BeanPropertySqlParameterSource(member);
 
         Number key = jdbcInsert.executeAndReturnKey(param);
-        member.setId(key.longValue());
+        member.setMemberId(key.longValue());
         return member;
 
     }
@@ -84,7 +84,7 @@ public class MemberRepositoryV2 {
                 "where userid=:userid";
         Optional<Member> member = findByUserId(userId);
 
-        //잔액이 부족할 경우
+        //잔액이 부족할 경우 -> go to service
         if (member.get().getPoint() < totalPrice) {
             return Optional.empty();
         }
